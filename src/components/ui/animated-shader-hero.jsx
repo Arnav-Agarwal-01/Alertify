@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 // Reusable Shader Background Hook
 const useShaderBackground = () => {
@@ -120,7 +120,7 @@ void main(){gl_Position=position;}`;
     init() {
       const gl = this.gl;
       const program = this.program;
-      
+
       this.buffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
@@ -140,14 +140,14 @@ void main(){gl_Position=position;}`;
     render(now = 0) {
       const gl = this.gl;
       const program = this.program;
-      
+
       if (!program || gl.getProgramParameter(program, gl.DELETE_STATUS)) return;
 
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(program);
       gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-      
+
       gl.uniform2f((program).resolution, this.canvas.width, this.canvas.height);
       gl.uniform1f((program).time, now * 1e-3);
       gl.uniform2f((program).move, ...this.mouseMove);
@@ -167,8 +167,8 @@ void main(){gl_Position=position;}`;
 
     constructor(element, scale) {
       this.scale = scale;
-      
-      const map = (element, scale, x, y) => 
+
+      const map = (element, scale, x, y) =>
         [x * scale, element.height - y * scale];
 
       element.addEventListener('pointerdown', (e) => {
@@ -217,8 +217,8 @@ void main(){gl_Position=position;}`;
     }
 
     get coords() {
-      return this.pointers.size > 0 
-        ? Array.from(this.pointers.values()).flat() 
+      return this.pointers.size > 0
+        ? Array.from(this.pointers.values()).flat()
         : [0, 0];
     }
 
@@ -229,13 +229,13 @@ void main(){gl_Position=position;}`;
 
   const resize = () => {
     if (!canvasRef.current) return;
-    
+
     const canvas = canvasRef.current;
     const dpr = Math.max(1, 0.5 * window.devicePixelRatio);
-    
+
     canvas.width = window.innerWidth * dpr;
     canvas.height = window.innerHeight * dpr;
-    
+
     if (rendererRef.current) {
       rendererRef.current.updateScale(dpr);
     }
@@ -243,7 +243,7 @@ void main(){gl_Position=position;}`;
 
   const loop = (now) => {
     if (!rendererRef.current || !pointersRef.current) return;
-    
+
     rendererRef.current.updateMouse(pointersRef.current.first);
     rendererRef.current.updatePointerCount(pointersRef.current.count);
     rendererRef.current.updatePointerCoords(pointersRef.current.coords);
@@ -257,23 +257,23 @@ void main(){gl_Position=position;}`;
 
     const canvas = canvasRef.current;
     const dpr = Math.max(1, 0.5 * window.devicePixelRatio);
-    
+
     rendererRef.current = new WebGLRenderer(canvas, dpr);
     pointersRef.current = new PointerHandler(canvas, dpr);
-    
+
     rendererRef.current.setup();
     rendererRef.current.init();
-    
+
     resize();
-    
+
     if (rendererRef.current.test(defaultShaderSource) === null) {
       rendererRef.current.updateShader(defaultShaderSource);
     }
-    
+
     loop(0);
-    
+
     window.addEventListener('resize', resize);
-    
+
     return () => {
       window.removeEventListener('resize', resize);
       if (animationFrameRef.current) {
@@ -392,43 +392,81 @@ const Hero = ({
           {/* Main Heading with Animation */}
           <div className="space-y-2">
             <h1
-              className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-orange-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent animate-fade-in-up animation-delay-200">
+              className="text-5xl md:text-7xl lg:text-8xl font-bold text-[#FEFFD1] animate-fade-in-up animation-delay-200">
               {headline.line1}
             </h1>
             <h1
-              className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-yellow-300 via-orange-400 to-red-400 bg-clip-text text-transparent animate-fade-in-up animation-delay-400">
+              className="text-5xl md:text-7xl lg:text-8xl font-bold text-[#FEFFD1] animate-fade-in-up animation-delay-400">
               {headline.line2}
             </h1>
           </div>
-          
+
           {/* Subtitle with Animation */}
           <div className="max-w-3xl mx-auto animate-fade-in-up animation-delay-600">
             <p
-              className="text-lg md:text-xl lg:text-2xl text-orange-100/90 font-light leading-relaxed">
+              className="text-lg md:text-xl lg:text-2xl text-[#FFF5BD] font-bold leading-relaxed">
               {subtitle}
             </p>
           </div>
-          
+
           {/* CTA Buttons with Animation */}
-          {buttons && (
-            <div
-              className="flex flex-col sm:flex-row gap-4 justify-center mt-10 animate-fade-in-up animation-delay-800">
-              {buttons.primary && (
-                <button
-                  onClick={buttons.primary.onClick}
-                  className="px-8 py-4 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-black rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-500/25">
-                  {buttons.primary.text}
-                </button>
-              )}
-              {buttons.secondary && (
-                <button
-                  onClick={buttons.secondary.onClick}
-                  className="px-8 py-4 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-300/30 hover:border-orange-300/50 text-orange-100 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm">
-                  {buttons.secondary.text}
-                </button>
-              )}
-            </div>
-          )}
+          <div className="w-full max-w-md mx-auto mt-10 animate-fade-in-up animation-delay-800">
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+
+                try {
+                  const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                  });
+
+                  if (response.ok) {
+                    alert('Submission successful!');
+                    e.target.reset();
+                  } else {
+                    alert('Submission failed. Please try again.');
+                  }
+                } catch (error) {
+                  console.error('Error submitting form:', error);
+                  alert('An error occurred. Please try again.');
+                }
+
+                if (buttons && buttons.onSubmit) {
+                  buttons.onSubmit(data);
+                }
+              }}
+              className="flex flex-col gap-4"
+            >
+              <div className="space-y-4">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                  className="w-full px-6 py-4 bg-white/5 border border-orange-300/20 rounded-xl text-white placeholder:text-orange-100/50 focus:outline-none focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                />
+                <input
+                  type="text"
+                  name="dreamRole"
+                  placeholder="Enter your dream role"
+                  required
+                  className="w-full px-6 py-4 bg-white/5 border border-orange-300/20 rounded-xl text-white placeholder:text-orange-100/50 focus:outline-none focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-orange-500/25 mt-2"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -496,9 +534,9 @@ void main(void) {
 		uv+=.1*cos(i*vec2(.1+.01*i, .8)+i*i+T*.5+.1*uv.x);
 		vec2 p=uv;
 		float d=length(p);
-		col+=.00125/d*(cos(sin(i)*vec3(1,2,3))+1.);
+		col+=.0006/d*(cos(sin(i)*vec3(1,2,3))+1.);
 		float b=noise(i+p+bg*1.731);
-		col+=.002*b/length(max(p,vec2(b*p.x*.02,p.y)));
+		col+=.001*b/length(max(p,vec2(b*p.x*.02,p.y)));
 		col=mix(col,vec3(bg*.25,bg*.137,bg*.05),d);
 	}
 	O=vec4(col,1);
