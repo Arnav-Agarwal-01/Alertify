@@ -13,7 +13,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full flex-1 flex flex-col">
       <Hero
         trustBadge={{
           text: "Join the beta version now (Limited to 50 people)",

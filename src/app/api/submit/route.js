@@ -14,7 +14,7 @@ export async function POST(request) {
 
         const client = await clientPromise;
         const db = client.db(); // Uses the database name from the connection string
-        const collection = db.collection('submissions');
+        const collection = db.collection('AlertifyWaitlist');
 
         const result = await collection.insertOne({
             email,

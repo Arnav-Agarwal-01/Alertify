@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { Github, Linkedin } from 'lucide-react';
 
 // Reusable Shader Background Hook
 const useShaderBackground = () => {
@@ -300,7 +301,7 @@ const Hero = ({
 
   return (
     <div
-      className={`relative w-full h-screen overflow-hidden bg-black ${className}`}>
+      className={`relative w-full h-full overflow-hidden bg-black ${className}`}>
       <style jsx>{`
         @keyframes fade-in-down {
           from {
@@ -468,8 +469,22 @@ const Hero = ({
             </form>
           </div>
         </div>
+
+        {/* Credits */}
+        <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center justify-center gap-2 text-sm text-white/60 z-20">
+          <p>Built by Arnav Agarwal</p>
+          <div className="flex gap-4">
+            <a href="https://www.linkedin.com/in/arnavagarwal05" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+              <Linkedin size={20} />
+            </a>
+            <a href="https://github.com/Arnav-Agarwal-01" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+              <Github size={20} />
+            </a>
+          </div>
+        </div>
       </div>
     </div>
+
   );
 };
 
