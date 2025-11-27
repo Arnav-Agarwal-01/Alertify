@@ -16,14 +16,22 @@ const LandingPage = () => {
     <div className="w-full flex-1 flex flex-col">
       <Hero
         trustBadge={{
-          text: "Join the beta version now (Limited to 50 people)",
+          text: "Join the beta version now (Only 50 slots remaining)",
           icons: ["✨"]
         }}
         headline={{
           line1: "Stop Scrolling",
           line2: "Start Getting Notified"
         }}
-        subtitle="Supercharge productivity with AI-powered automation and integrations built for the next generation of teams — fast, seamless, and limitless."
+        subtitle={
+          <>
+            Precision job alerts. Zero noise. Zero delay.
+            <br />
+            LinkedIn tells you after everyone else. We tell you before anyone else.
+            <br />
+            Instant, hyper-targeted job alerts for the exact roles and companies you choose.
+          </>
+        }
         buttons={{
           primary: {
             text: "Get Started for Free",

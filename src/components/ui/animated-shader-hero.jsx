@@ -370,7 +370,7 @@ const Hero = ({
         className="absolute inset-0 z-10 flex flex-col items-center justify-center text-white">
         {/* Trust Badge */}
         {trustBadge && (
-          <div className="mb-8 animate-fade-in-down">
+          <div className="mb-6 animate-fade-in-down">
             <div
               className="flex items-center gap-2 px-6 py-3 bg-orange-500/10 backdrop-blur-md border border-orange-300/30 rounded-full text-sm">
               {trustBadge.icons && (
@@ -389,15 +389,15 @@ const Hero = ({
           </div>
         )}
 
-        <div className="text-center space-y-6 max-w-5xl mx-auto px-4">
+        <div className="text-center space-y-6 max-w-5xl mx-auto px-4 pb-16">
           {/* Main Heading with Animation */}
           <div className="space-y-2">
             <h1
-              className="text-5xl md:text-7xl lg:text-8xl font-bold text-[#FEFFD1] animate-fade-in-up animation-delay-200">
+              className="text-4xl md:text-6xl lg:text-7xl font-bold text-[#FEFFD1] animate-fade-in-up animation-delay-200">
               {headline.line1}
             </h1>
             <h1
-              className="text-5xl md:text-7xl lg:text-8xl font-bold text-[#FEFFD1] animate-fade-in-up animation-delay-400">
+              className="text-4xl md:text-6xl lg:text-7xl font-bold text-[#FEFFD1] animate-fade-in-up animation-delay-400">
               {headline.line2}
             </h1>
           </div>
@@ -411,7 +411,7 @@ const Hero = ({
           </div>
 
           {/* CTA Buttons with Animation */}
-          <div className="w-full max-w-md mx-auto mt-10 animate-fade-in-up animation-delay-800">
+          <div className="w-full max-w-md mx-auto mt-8 animate-fade-in-up animation-delay-800">
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -549,9 +549,9 @@ void main(void) {
 		uv+=.1*cos(i*vec2(.1+.01*i, .8)+i*i+T*.5+.1*uv.x);
 		vec2 p=uv;
 		float d=length(p);
-		col+=.0006/d*(cos(sin(i)*vec3(1,2,3))+1.);
+		col+=.0003/d*(cos(sin(i)*vec3(1,2,3))+1.);
 		float b=noise(i+p+bg*1.731);
-		col+=.001*b/length(max(p,vec2(b*p.x*.02,p.y)));
+		col+=.0005*b/length(max(p,vec2(b*p.x*.02,p.y)));
 		col=mix(col,vec3(bg*.25,bg*.137,bg*.05),d);
 	}
 	O=vec4(col,1);
