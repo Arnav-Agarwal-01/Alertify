@@ -1,5 +1,6 @@
 import clientPromise from '@/lib/db';
 import { NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 
 export async function POST(request) {
     try {
@@ -21,6 +22,42 @@ export async function POST(request) {
             dreamRole,
             createdAt: new Date(),
         });
+
+        // Send Thank You Email
+        try {
+            const transporter = nodemailer.createTransport({
+                service: process.env.EMAIL_SERVICE || 'gmail', // Default to gmail, but allow override
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                },
+            });
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Welcome to Alertify!',
+                text: `Hi there,\n\nThank you for joining the Alertify waitlist! We're excited to help you find your dream role\n\nWe'll notify you as soon as we launch.\n\nBest,\nThe Alertify Team`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <h1 style="color: #f97316;">Welcome to Alertify!</h1>
+                        <p>Hi there,</p>
+                        <p>Thank you for joining the Alertify waitlist! We're excited to help you find your dream role</p>
+                        <p>We'll notify you as soon as we launch.</p>
+                        <br/>
+                        <p>Best,</p>
+                        <p>The Alertify Team</p>
+                    </div>
+                `,
+            };
+
+            await transporter.sendMail(mailOptions);
+            console.log('Email sent successfully to:', email);
+
+        } catch (emailError) {
+            console.error('Error sending email:', emailError);
+            // We don't want to fail the request if email fails, just log it
+        }
 
         return NextResponse.json(
             { message: 'Submission successful', id: result.insertedId },

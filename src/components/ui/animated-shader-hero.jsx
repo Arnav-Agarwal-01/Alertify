@@ -298,6 +298,7 @@ const Hero = ({
   className = ""
 }) => {
   const canvasRef = useShaderBackground();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <div
@@ -415,6 +416,9 @@ const Hero = ({
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
+                if (isSubmitting) return;
+
+                setIsSubmitting(true);
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData);
 
@@ -436,6 +440,8 @@ const Hero = ({
                 } catch (error) {
                   console.error('Error submitting form:', error);
                   alert('An error occurred. Please try again.');
+                } finally {
+                  setIsSubmitting(false);
                 }
 
                 if (buttons && buttons.onSubmit) {
@@ -450,21 +456,24 @@ const Hero = ({
                   name="email"
                   placeholder="Enter your email"
                   required
-                  className="w-full px-6 py-4 bg-white/5 border border-orange-300/20 rounded-xl text-white placeholder:text-orange-100/50 focus:outline-none focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                  disabled={isSubmitting}
+                  className="w-full px-6 py-4 bg-white/5 border border-orange-300/20 rounded-xl text-white placeholder:text-orange-100/50 focus:outline-none focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <input
                   type="text"
                   name="dreamRole"
                   placeholder="Enter your dream role"
                   required
-                  className="w-full px-6 py-4 bg-white/5 border border-orange-300/20 rounded-xl text-white placeholder:text-orange-100/50 focus:outline-none focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                  disabled={isSubmitting}
+                  className="w-full px-6 py-4 bg-white/5 border border-orange-300/20 rounded-xl text-white placeholder:text-orange-100/50 focus:outline-none focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-orange-500/25 mt-2"
+                disabled={isSubmitting}
+                className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-orange-500/25 mt-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                Submit
+                {isSubmitting ? 'Submitting...' : 'Submit'}
               </button>
             </form>
           </div>
