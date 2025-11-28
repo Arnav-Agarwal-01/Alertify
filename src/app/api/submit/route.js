@@ -25,6 +25,12 @@ export async function POST(request) {
 
         // Send Thank You Email
         try {
+            if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+                console.warn('Missing EMAIL_USER or EMAIL_PASS environment variables. Skipping email.');
+                // We can throw an error here if we want to catch it below, or just return early
+                throw new Error('Missing email credentials');
+            }
+
             const transporter = nodemailer.createTransport({
                 service: process.env.EMAIL_SERVICE || 'gmail', // Default to gmail, but allow override
                 auth: {
@@ -37,12 +43,12 @@ export async function POST(request) {
                 from: process.env.EMAIL_USER,
                 to: email,
                 subject: 'Welcome to Alertify!',
-                text: `Hi there,\n\nThank you for joining the Alertify waitlist! We're excited to help you find your dream role\n\nWe'll notify you as soon as we launch.\n\nBest,\nThe Alertify Team`,
+                text: `Hi there,\n\nThank you for joining the Alertify Beta Testing! We're excited to help you find your dream role\n\nWe'll notify you as soon as we launch.\n\nBest,\nThe Alertify Team`,
                 html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                         <h1 style="color: #f97316;">Welcome to Alertify!</h1>
                         <p>Hi there,</p>
-                        <p>Thank you for joining the Alertify waitlist! We're excited to help you find your dream role</p>
+                        <p>Thank you for joining the Alertify Beta Testing! We're excited to help you find your dream role</p>
                         <p>We'll notify you as soon as we launch.</p>
                         <br/>
                         <p>Best,</p>
